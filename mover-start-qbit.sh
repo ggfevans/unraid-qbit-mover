@@ -33,7 +33,7 @@ log_message() {
 check_prerequisites() {
     # Check log directory
     if ! mkdir -p "${LOG_DIR}"; then
-        echo "ERROR: Cannot create log directory ${LOG_DIR}"
+        log_message "ERROR: Cannot create log directory ${LOG_DIR}"
         exit 1
     fi
 
@@ -52,25 +52,22 @@ check_prerequisites() {
 
 # Function to start container with retries
 start_container() {
+    local retry_count=0
+    
     if is_container_running; then
         log_message "Container ${CONTAINER_NAME} is already running"
         return 0
-    }
+    fi
 
-    local retry_count=0
     while [ $retry_count -lt $MAX_RETRIES ]; do
-        log_message "Starting ${CONTAINER_NAME} (attempt $((retry_count + 1))/${MAX_RETRIES})"
-        
         if docker start "${CONTAINER_NAME}"; then
             log_message "Successfully started ${CONTAINER_NAME}"
             return 0
         fi
         
         retry_count=$((retry_count + 1))
-        [ $retry_count -lt $MAX_RETRIES ] && {
-            log_message "Retrying in ${RETRY_DELAY} seconds..."
-            sleep "${RETRY_DELAY}"
-        }
+        log_message "Retry ${retry_count}/${MAX_RETRIES} failed, waiting ${RETRY_DELAY} seconds..."
+        sleep "${RETRY_DELAY}"
     done
 
     return 1
@@ -84,10 +81,10 @@ is_container_running() {
 # Main execution
 main() {
     check_prerequisites
-    start_container || {
+    if ! start_container; then
         log_message "ERROR: Failed to start ${CONTAINER_NAME} after ${MAX_RETRIES} attempts"
         exit 1
-    }
+    fi
 }
 
 main

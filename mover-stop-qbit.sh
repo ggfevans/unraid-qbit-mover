@@ -32,7 +32,7 @@ log_message() {
 check_prerequisites() {
     # Check log directory
     if ! mkdir -p "${LOG_DIR}"; then
-        echo "ERROR: Cannot create log directory ${LOG_DIR}"
+        log_message "ERROR: Cannot create log directory ${LOG_DIR}"
         exit 1
     fi
 
@@ -54,23 +54,24 @@ stop_container() {
     if ! docker ps --quiet --filter name="^/${CONTAINER_NAME}$" | grep -q .; then
         log_message "Container ${CONTAINER_NAME} not running"
         return 0
-    }
+    fi
 
     log_message "Stopping ${CONTAINER_NAME} container"
     if docker stop --time="${TIMEOUT}" "${CONTAINER_NAME}"; then
         log_message "Successfully stopped ${CONTAINER_NAME}"
         return 0
+    else
+        return 1
     fi
-    return 1
 }
 
 # Main execution
 main() {
     check_prerequisites
-    stop_container || {
+    if ! stop_container; then
         log_message "ERROR: Failed to stop ${CONTAINER_NAME}"
         exit 1
-    }
+    fi
 }
 
 main
