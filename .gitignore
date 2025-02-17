@@ -1,0 +1,14 @@
+# Logs
+/var/log/mover/*.log
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
