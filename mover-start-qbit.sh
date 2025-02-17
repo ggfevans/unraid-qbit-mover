@@ -54,11 +54,6 @@ check_prerequisites() {
 start_container() {
     local retry_count=0
     
-    if is_container_running; then
-        log_message "Container ${CONTAINER_NAME} is already running"
-        return 0
-    fi
-
     while [ $retry_count -lt $MAX_RETRIES ]; do
         if docker start "${CONTAINER_NAME}"; then
             log_message "Successfully started ${CONTAINER_NAME}"
@@ -71,11 +66,6 @@ start_container() {
     done
 
     return 1
-}
-
-# Function to check if container is running
-is_container_running() {
-    docker ps --quiet --filter name="^/${CONTAINER_NAME}$" | grep -q .
 }
 
 # Main execution
