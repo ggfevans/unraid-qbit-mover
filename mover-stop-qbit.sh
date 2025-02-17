@@ -31,22 +31,22 @@ log_message() {
 # Function to check prerequisites
 check_prerequisites() {
     # Check log directory
-    mkdir -p "${LOG_DIR}" || {
+    if ! mkdir -p "${LOG_DIR}"; then
         echo "ERROR: Cannot create log directory ${LOG_DIR}"
         exit 1
-    }
+    fi
 
     # Check Docker
     if ! docker info >/dev/null 2>&1; then
         log_message "ERROR: Docker is not running"
         exit 1
-    }
+    fi
 
     # Check if container exists
     if ! docker container inspect "${CONTAINER_NAME}" >/dev/null 2>&1; then
         log_message "ERROR: Container ${CONTAINER_NAME} does not exist"
         exit 1
-    }
+    fi
 }
 
 # Function to stop container
