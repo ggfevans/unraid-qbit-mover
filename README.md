@@ -1,7 +1,7 @@
 # Unraid Mover qBittorrent Handler
 
-[![ShellCheck](https://github.com/ggfevans/unraid-qbit-mover/workflows/ShellCheck/badge.svg)](https://github.com/ggfevans/unraid-qbit-mover/actions)
-[![Version](https://img.shields.io/github/v/release/ggfevans/unraid-qbit-mover)](https://github.com/ggfevans/unraid-qbit-mover/releases)
+[![ShellCheck](https://github.com/ggfevans/unraid-qbit-mover/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/ggfevans/unraid-qbit-mover/actions)
+[![Version](https://img.shields.io/github/v/release/ggfevans/unraid-qbit-mover?include_prereleases)](https://github.com/ggfevans/unraid-qbit-mover/releases/latest)
 [![License](https://img.shields.io/github/license/ggfevans/unraid-qbit-mover)](LICENSE)
 
 Prevent cache drive overflow by gracefully managing qBittorrent during Unraid mover operations.
