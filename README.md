@@ -8,19 +8,45 @@ Prevent cache drive overflow by gracefully managing qBittorrent during Unraid mo
 
 [Current version: 1.0.0](CHANGELOG.md)
 
+```markdown
 ## Why This Exists
 
-When qBittorrent (or your BitTorrent client of choice) downloads files to your cache drive, it maintains active file locks. These locks can prevent the Unraid mover from clearing completed downloads from your cache drive, leading to:
+Modern Unraid systems use cache pools (SSDs) and array drives (HDDs) in a tiered storage strategy. Shares configured with "Yes" or "Prefer" cache settings write all new data to the cache pool first, providing:
 
-- Cache drive filling up unexpectedly
-- Mover operations failing silently
-- Potential download interruptions
-- Cache pool space issues
+- High-speed write performance for downloads and file operations (crucial for 10Gbe)
+- Reduced array drive spin-up, lowering power use and mechanical wear  
+- Improved SSD endurance through write coalescing before array transfer
+- Better performance for applications reading recent data
+
+A standard media management workflow:
+1. qBittorrent downloads to a cache-enabled `/downloads` share
+2. Hard-linked copies created in `/media` for Plex/Jellyfin
+3. Original files in `/downloads` maintained for seeding
+
+This creates a technical conflict with Unraid's mover process:
+
+1. qBittorrent maintains kernel-level file locks:
+   - Write locks on active downloads
+   - Read locks on seeding files
+2. Mover cannot migrate locked files to array
+3. Cache space depletes as locked files accumulate
+4. When cache fills:
+   - New downloads fail
+   - Docker containers cannot write to cache-enabled shares
+   - Database writes fail, risking application corruption
+   - Real-time media writing (DVR) stops
 
 This script pair solves these issues by:
-1. Gracefully stopping qBittorrent before mover runs
-2. Allowing mover to clear the cache drive
-3. Automatically restarting qBittorrent when complete
+1. Stopping qBittorrent before mover operations
+2. Enabling complete cache-to-array migration of seeding content
+3. Automatically resuming seeding from array locations
+4. Maintaining hard link integrity
+5. Preserving all torrent states
+
+The result:
+- Prevents cache overflow
+- Maintains download and seeding performance
+- Requires no manual intervention
 
 ## Quick Start
 
