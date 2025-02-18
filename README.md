@@ -8,7 +8,6 @@ Prevent cache drive overflow by gracefully managing qBittorrent during Unraid mo
 
 [Current version: 1.0.0](CHANGELOG.md)
 
-```markdown
 ## Why This Exists
 
 Modern Unraid systems use cache pools (SSDs) and array drives (HDDs) in a tiered storage strategy. Shares configured with "Yes" or "Prefer" cache settings write all new data to the cache pool first, providing:
