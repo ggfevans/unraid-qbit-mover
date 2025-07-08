@@ -12,3 +12,8 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# GitHub CLI artefacts
+gh_*_linux_amd64*
+.github/
+.github/*
